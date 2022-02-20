@@ -8,3 +8,43 @@
  *  5. Add error/loading states and cover edge use cases
  *
  */
+
+class getWeatherData {
+  constructor() {
+    const BASE_API_URL = 'https://www.metaweather.com/api/location/';
+    const SEARCH_API_URL = `${BASE_API_URL}search/`;
+    this.addCorsHeader();
+  }
+
+  addCorsHeader() {
+    $.ajaxPrefilter(options => {
+      if (options.crossDomain && $.support.cors) {
+        options.url = 'https://the-ultimate-api-challenge.herokuapp.com/' + options.url;
+      }
+    });
+  }
+
+  getLocation() {
+    $.getJSON(SEARCH_API_URL, { query: 'Istanbul' }).done(data => this.getWeatherData(data[0].woeid));
+  }
+
+  getWeatherData(location) {
+    $.getJSON(`${BASE_API_URL}${location}`).done(data => {
+      console.log('Data:', data);
+    });
+  }
+}
+
+class requestControler {
+  constructor() {
+    this.getWeatherData = new getWeatherData();
+    this.init();
+  }
+
+  init() {
+    this.getWeatherData.getLocation();
+  }
+}
+
+const request = new requestControler();
+request.getLocation();
