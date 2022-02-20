@@ -9,7 +9,7 @@
  *
  */
 
-class fetchApi {
+class fetchDataApi {
   constructor() {
     this.BASE_API_URL = 'https://www.metaweather.com/api/location/';
     this.SEARCH_API_URL = `${this.BASE_API_URL}search/`;
@@ -24,8 +24,8 @@ class fetchApi {
     });
   }
 
-  getLocation() {
-    $.getJSON(this.SEARCH_API_URL, { query: 'Istanbul' }).done(data => this.getWeatherData(data[0].woeid));
+  getLocation(query) {
+    $.getJSON(this.SEARCH_API_URL, { query: query }).done(data => this.getWeatherData(data[0].woeid));
   }
 
   getWeatherData(location) {
@@ -35,14 +35,81 @@ class fetchApi {
   }
 }
 
-class requestControler {
+class domElements {
   constructor() {
-    this.fetchApi = new fetchApi();
-    this.init();
+    this.searchForm = $('#search-form');
+    this.errorBox = $('#error-box');
+    this.searchBox = $('#search-box');
+    this.loaderBox = $('#loader-box');
+    this.forecastBox = $('#forecast-box');
   }
 
-  init() {
-    this.fetchApi.getLocation();
+  showForecast() {
+    this.hideError();
+    this.forecastBox.removeClass('d-none');
+    this.forecastBox.addClass('d-flex');
+  }
+
+  showLoader() {
+    this.loaderBox.removeClass('d-none');
+  }
+
+  hideLoader() {
+    this.loaderBox.addClass('d-none');
+  }
+
+  showSearch() {
+    this.searchBox.removeClass('d-none');
+    this.searchBox.addClass('d-flex');
+  }
+
+  hideSearchBox() {
+    this.searchBox.removeClass('d-flex');
+    this.searchBox.addClass('d-none');
+  }
+
+  showError(message) {
+    this.hideLoader();
+    this.showSearch();
+    this.errorBox.removeClass('d-none');
+    this.errorBox.addClass('d-block');
+    this.errorBox.html(`<p class="mb-0">${message}</p>`);
+  }
+
+  hideError() {
+    this.errorBox.addClass('d-none');
+  }
+}
+
+class requestControler {
+  constructor() {
+    this.fetchDataApi = new fetchDataApi();
+    this.domElements = new domElements();
+    this.registerEventListener();
+  }
+
+  showRequestInProgress() {
+    this.domElements.showLoader();
+    this.domElements.hideSearchBox();
+  }
+
+  getQuery() {
+    return $('#search-query').val().trim();
+  }
+
+  onSubmit() {
+    const query = this.getQuery();
+    if (!query) return;
+
+    this.showRequestInProgress();
+    this.fetchDataApi.getLocation(query);
+  }
+
+  registerEventListener() {
+    this.domElements.searchForm.on('submit', e => {
+      e.preventDefault();
+      this.onSubmit();
+    });
   }
 }
 
