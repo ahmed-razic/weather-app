@@ -9,10 +9,10 @@
  *
  */
 
-class getWeatherData {
+class fetchApi {
   constructor() {
-    const BASE_API_URL = 'https://www.metaweather.com/api/location/';
-    const SEARCH_API_URL = `${BASE_API_URL}search/`;
+    this.BASE_API_URL = 'https://www.metaweather.com/api/location/';
+    this.SEARCH_API_URL = `${this.BASE_API_URL}search/`;
     this.addCorsHeader();
   }
 
@@ -25,11 +25,11 @@ class getWeatherData {
   }
 
   getLocation() {
-    $.getJSON(SEARCH_API_URL, { query: 'Istanbul' }).done(data => this.getWeatherData(data[0].woeid));
+    $.getJSON(this.SEARCH_API_URL, { query: 'Istanbul' }).done(data => this.getWeatherData(data[0].woeid));
   }
 
   getWeatherData(location) {
-    $.getJSON(`${BASE_API_URL}${location}`).done(data => {
+    $.getJSON(`${this.BASE_API_URL}${location}`).done(data => {
       console.log('Data:', data);
     });
   }
@@ -37,14 +37,13 @@ class getWeatherData {
 
 class requestControler {
   constructor() {
-    this.getWeatherData = new getWeatherData();
+    this.fetchApi = new fetchApi();
     this.init();
   }
 
   init() {
-    this.getWeatherData.getLocation();
+    this.fetchApi.getLocation();
   }
 }
 
 const request = new requestControler();
-request.getLocation();
