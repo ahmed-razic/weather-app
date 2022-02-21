@@ -179,7 +179,7 @@ class dataMiddleware {
 
 class displayForecast {
   constructor() {
-    this.imageURL = 'https://www.metaweather.com/statis/img/weather';
+    this.imageURL = 'https://www.metaweather.com/static/img/weather';
   }
 
   showTodaysForecastDetails({ name, value, unit }) {
