@@ -72,12 +72,44 @@ class domElements {
   }
 }
 
-class dataMiddleware {
+class displayForecast {
   constructor() {
-    this.domElements = new domElements();
-    this.displayForecast = new displayForecast();
+    this.imageURL = 'https://www.metaweather.com/static/img/weather';
   }
 
+  showTodaysForecastDetails({ name, value, unit }) {
+    $(`#forecast-details`).append(`
+        <div class="d-flex justify-content-between">
+            <span class="font-weight-bolder">${name}</span>
+            <span>${value} ${unit}</span>
+        </div>
+    `);
+  }
+  showUpcomingDaysForecast({ dayImgUrl, weekDay, maxTemp }) {
+    $('#forecast-details-week').append(`
+        <li class="forecastBox__week-day d-flex flex-column justify-content-center align-items-center p-2 weather-day">
+            <img class="mb-2" width="30" src="${this.imageURL}/${dayImgUrl}.svg" />
+            <span class="mb-2">${weekDay}</span>
+            <span class="font-weight-bold">${maxTemp}&deg</span>
+        </li>
+    `);
+  }
+
+  showTodaysForecast(forecast) {
+    $('#forecast-card-weekday').html(forecast.currentWeekday);
+    $('#forecast-card-date').html(forecast.todaysFullDate);
+    $('#forecast-card-location').html(forecast.locationName);
+    $('#forecast-card-img').attr('src', `${this.imageURL}/${forecast.todaysImgUrl}.svg`);
+    $('#forecast-card-temp').html(forecast.todaysTemp);
+    $('#forecast-card-description').html(forecast.weatherState);
+  }
+}
+
+class dataMiddleware {
+  constructor() {
+    this.displayForecast = new displayForecast();
+    this.domElements = new domElements();
+  }
   gatherTodaysForecastDetails(data) {
     return {
       predictability: {
@@ -109,8 +141,8 @@ class dataMiddleware {
 
   gatherTodaysForecastGeneral(data) {
     return {
-      currentWeekday: moment(data.aplicable_date).format('dddd'),
-      todaysFullDate: moment(data.aplicable_date).format('MMMM Do'),
+      currentWeekday: moment(data.applicable_date).format('dddd'),
+      todaysFullDate: moment(data.applicable_date).format('MMMM Do'),
       locationName: data.title,
       todaysImgUrl: data.weather_state_abbr,
       todaysTemp: Math.round(data.the_temp),
@@ -126,12 +158,19 @@ class dataMiddleware {
       air_pressure,
       max_temp,
       min_temp,
-      aplicable_date,
+      applicable_date,
       the_temp,
       weather_state_abbr,
       weather_state_name,
     } = data.consolidated_weather[0];
 
+    const todaysForecastGeneral = this.gatherTodaysForecastGeneral({
+      applicable_date,
+      weather_state_abbr,
+      weather_state_name,
+      the_temp,
+      title: data.title,
+    });
     const todaysForecastDetails = this.gatherTodaysForecastDetails({
       predictability,
       humidity,
@@ -141,15 +180,9 @@ class dataMiddleware {
       min_temp,
     });
 
-    const todaysForecatGeneral = this.gatherTodaysForecastGeneral({
-      aplicable_date,
-      the_temp,
-      weather_state_abbr,
-      weather_state_name,
-      title: data.title,
-    });
-
-    this.displayForecast.showTodaysForecast(todaysForecatGeneral);
+    this.displayForecast.showTodaysForecast(todaysForecastGeneral);
+    this.prepareTodaysForecastDetails(todaysForecastDetails);
+    this.prepareUpcomingDaysForecast(data.consolidated_weather);
     this.domElements.hideLoader();
     this.domElements.showForecast();
   }
@@ -174,39 +207,6 @@ class dataMiddleware {
 
       this.displayForecast.showUpcomingDaysForecast({ dayImgUrl, maxTemp, weekDay });
     });
-  }
-}
-
-class displayForecast {
-  constructor() {
-    this.imageURL = 'https://www.metaweather.com/static/img/weather';
-  }
-
-  showTodaysForecastDetails({ name, value, unit }) {
-    $(`#forecast-details`).append(`
-    <div class="d-flex justify-content-between">
-    <span class="font-weight-bolder">${name}</span>
-    <span>${value} ${unit}</span>
-    </div>`);
-  }
-
-  showUpcomingDaysForecast({ dayImgUrl, weekday, maxTemp }) {
-    $(`#forecast-details-week`).append(`
-
-    <li class="forecastBox__week-day d-flex flex-column justify-content-center align-items-center p-2 weather-day">
-    <img class"mb-2" width="30" src="${this.imageURL}/${dayImgUrl}.svg" />
-    <span class="mb-2">${weekday}</span>
-    <span class="font-weight-bold">${maxTemp}&deg</span>
-    </li>`);
-  }
-
-  showTodaysForecast(forecast) {
-    $('#forecast-card-weekday').html(forecast.currentWeekday);
-    $('#forecast-card-date').html(forecast.todaysFullDate);
-    $('#forecast-card-location').html(forecast.locationName);
-    $('#forecast-card-img').attr('src', `${this.imageURL}/${forecast.todaysImgUrl}.svg`);
-    $('#forecast-card-temp').html(forecast.todaysTemp);
-    $('#forecast-card-description').html(forecast.weatherState);
   }
 }
 
