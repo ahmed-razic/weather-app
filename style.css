@@ -16,7 +16,7 @@
 body {
   width: 100%;
   height: 100vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Merriweather Sans', sans-serif;
   background-color: var(--bg-color);
   color: var(--main-text-color);
 }
