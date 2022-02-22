@@ -190,7 +190,7 @@ class dataMiddleware {
   prepareTodaysForecastDetails(forecast) {
     $.each(forecast, (key, value) => {
       this.displayForecast.showTodaysForecastDetails({
-        name: key.toUpperCase(),
+        name: key,
         value: value.value,
         unit: value.unit,
       });

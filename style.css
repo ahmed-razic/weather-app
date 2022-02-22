@@ -3,8 +3,9 @@
 
 :root {
   --gradient: linear-gradient(135deg, #a5f272 10%, #23792f 100%);
-  --bg-color: #343d4b;
-  --bg-color--card: #222831;
+  --gradient-img: linear-gradient(135deg, #72cef2 10%, #242379 100%);
+  --bg-color: #192c4b;
+  --bg-color--card: #325583;
 
   --main-text-color: #ffffff;
 
@@ -100,7 +101,7 @@ body {
   height: 100%;
   top: 0;
   left: 0;
-  background-image: var(--gradient);
+  background-image: var(--gradient-img);
   background-size: cover;
   border-radius: var(--main-border-radius);
   opacity: 0.7;
@@ -111,7 +112,7 @@ body {
   height: 100%;
   top: 0;
   left: 0;
-  background-image: url('mountain.jpg');
+  background-image: url('medow.png');
   background-size: cover;
   border-radius: var(--main-border-radius);
 }
