@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700,900&display=swap');
 
 :root {
-  --gradient: linear-gradient(135deg, #a5f272 10%, #23792f 100%);
+  --gradient: linear-gradient(135deg, #72b8f2 10%, #332379 100%);
   --gradient-img: linear-gradient(135deg, #72cef2 10%, #242379 100%);
   --bg-color: #192c4b;
   --bg-color--card: #325583;
